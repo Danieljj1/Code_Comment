@@ -1,416 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Code Comment!</title>
-    <style>
-      :root {
-        --bg: #0f172a;
-        --card: #020617;
-        --accent: #22c55e;
-        --accent-soft: #4ade8040;
-        --border: #1e293b;
-        --text-main: #e5e7eb;
-        --text-muted: #9ca3af;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Code Comment!</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --accent: #22c55e;
+      --accent-soft: #4ade8040;
+      --border: #1e293b;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh; margin: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at top, #1e293b, #020617 55%, #000 100%);
+      color: var(--text-main); padding: 1.5rem;
+    }
+    .shell { width: 100%; max-width: 1020px; }
+    .card {
+      background: var(--card); border-radius: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 45px rgba(15,23,42,0.9), 0 0 0 1px rgba(15,23,42,0.6);
+      padding: 1.5rem;
+    }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1.25rem;
+    }
+    .title-row { display: flex; align-items: center; gap: 0.6rem; }
+    .logo-pill {
+      width: 40px; height: 40px; border-radius: 999px;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 30% 30%, #bbf7d0, #22c55e);
+      box-shadow: 0 0 0 3px #22c55e40; font-size: 1.3rem;
+    }
+    h1 { font-size: 1.4rem; margin: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+    h1 span:first-child { font-weight: 700; }
+    h1 span:last-child { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+    .chip {
+      font-size: 0.75rem; border-radius: 999px; padding: 0.3rem 0.75rem;
+      background: var(--accent-soft); color: #bbf7d0;
+      border: 1px solid #4ade80; display: inline-flex; align-items: center;
+      gap: 0.35rem; white-space: nowrap;
+    }
+    .chip-dot { width: 6px; height: 6px; border-radius: 999px; background: #22c55e; box-shadow: 0 0 0 3px #22c55e40; }
 
-      * {
-        box-sizing: border-box;
-      }
+    /* Mode Tabs */
+    .mode-tabs {
+      display: flex; gap: 0.35rem; margin-bottom: 1.25rem;
+      background: #0a0e1a; border-radius: 999px; padding: 0.3rem;
+      border: 1px solid var(--border); flex-wrap: wrap;
+    }
+    .mode-tab {
+      flex: 1; min-width: fit-content; padding: 0.45rem 0.85rem;
+      border-radius: 999px; border: none; background: transparent;
+      color: var(--text-muted); font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .mode-tab.active { background: linear-gradient(135deg, #22c55e, #4ade80); color: #022c22; }
+    .mode-tab:hover:not(.active) { color: var(--text-main); }
 
-      body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(
-          circle at top,
-          #1e293b,
-          #020617 55%,
-          #000 100%
-        );
-        color: var(--text-main);
-        padding: 1.5rem;
-      }
+    label {
+      display: inline-block; margin-bottom: 0.35rem;
+      font-size: 0.8rem; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.03em; text-transform: uppercase;
+    }
+    textarea {
+      width: 100%; min-height: 220px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.86rem; padding: 0.75rem 0.8rem;
+      border-radius: 0.9rem; border: 1px solid var(--border);
+      background: #020617; color: var(--text-main); resize: vertical; outline: none;
+    }
+    textarea:focus { border-color: #4ade80; box-shadow: 0 0 0 1px #4ade8080; }
+    .row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+    .field-group { flex: 1 1 180px; min-width: 0; }
+    select {
+      width: 100%; padding: 0.55rem 0.7rem; border-radius: 999px;
+      border: 1px solid var(--border); background: #020617;
+      color: var(--text-main); font-size: 0.85rem; outline: none;
+    }
+    select:focus { border-color: #4ade80; box-shadow: 0 0 0 1px #4ade8080; }
+    .actions { display: flex; gap: 0.5rem; align-items: center; margin-top: 1rem; flex-wrap: wrap; }
+    button.generate-btn {
+      padding: 0.55rem 1.1rem; border-radius: 999px; border: none;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      color: #022c22; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      box-shadow: 0 10px 25px rgba(34,197,94,0.3), 0 0 0 1px #16653440;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+    }
+    button.generate-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    button.generate-btn:disabled { opacity: 0.7; cursor: wait; transform: none; }
+    button.copy-btn {
+      padding: 0.55rem 1rem; border-radius: 999px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text-muted); font-size: 0.85rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      transition: all 0.15s;
+    }
+    button.copy-btn:hover { border-color: #4ade80; color: #bbf7d0; }
+    .hint { font-size: 0.75rem; color: var(--text-muted); }
+    .status { font-size: 0.8rem; margin-top: 0.4rem; min-height: 1em; }
+    .status.error { color: #fca5a5; }
+    .status.ok { color: #a7f3d0; }
+    .output-card {
+      margin-top: 1.25rem; padding: 0.9rem; border-radius: 1rem;
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at top left, #0f172a, #020617 60%);
+    }
+    .output-header {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 0.5rem; margin-bottom: 0.4rem;
+    }
+    .output-title { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .pill { font-size: 0.74rem; border-radius: 999px; padding: 0.18rem 0.55rem; background: #111827; border: 1px solid #1f2937; color: var(--text-muted); }
+    pre {
+      margin: 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.82rem; white-space: pre-wrap; word-wrap: break-word;
+      max-height: 460px; overflow: auto;
+    }
+    .mode-description {
+      font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem; background: #0a0e1a; border-radius: 0.5rem;
+      border-left: 3px solid #4ade80;
+    }
+    @media (max-width: 640px) {
+      .card { padding: 1.1rem; }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card">
+      <header>
+        <div class="title-row">
+          <div class="logo-pill">💬</div>
+          <h1>
+            <span>Code Comment!</span>
+            <span>AI-powered code tools</span>
+          </h1>
+        </div>
+        <div class="chip">
+          <span class="chip-dot"></span>
+          <span>AI-powered helper</span>
+        </div>
+      </header>
 
-      .shell {
-        width: 100%;
-        max-width: 980px;
-      }
+      <!-- Mode Tabs -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="comments" onclick="setMode('comments')">✨ Add Comments</button>
+        <button class="mode-tab" data-mode="docstrings" onclick="setMode('docstrings')">📝 Docstrings</button>
+        <button class="mode-tab" data-mode="explain" onclick="setMode('explain')">🔍 Explain Code</button>
+        <button class="mode-tab" data-mode="readme" onclick="setMode('readme')">📄 Generate README</button>
+      </div>
 
-      .card {
-        background: var(--card);
-        border-radius: 1.5rem;
-        border: 1px solid var(--border);
-        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9),
-          0 0 0 1px rgba(15, 23, 42, 0.6);
-        padding: 1.5rem;
-      }
+      <div id="modeDescription" class="mode-description">
+        Add inline comments to your code at the right level of detail for your audience.
+      </div>
 
-      header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        margin-bottom: 1.25rem;
-      }
+      <div>
+        <label for="code">Your code</label>
+        <textarea id="code" placeholder="Paste your code here..."></textarea>
+      </div>
 
-      .title-row {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-
-      .logo-pill {
-        width: 40px;
-        height: 40px;
-        border-radius: 999px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(circle at 30% 30%, #bbf7d0, #22c55e);
-        box-shadow: 0 0 0 3px #22c55e40;
-        font-size: 1.3rem;
-      }
-
-      h1 {
-        font-size: 1.4rem;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.1rem;
-      }
-
-      h1 span:first-child {
-        font-weight: 700;
-      }
-
-      h1 span:last-child {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        font-weight: 500;
-      }
-
-      .chip {
-        font-size: 0.75rem;
-        border-radius: 999px;
-        padding: 0.3rem 0.75rem;
-        background: var(--accent-soft);
-        color: #bbf7d0;
-        border: 1px solid #4ade80;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        white-space: nowrap;
-      }
-
-      .chip-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 999px;
-        background: #22c55e;
-        box-shadow: 0 0 0 3px #22c55e40;
-      }
-
-      label {
-        display: inline-block;
-        margin-bottom: 0.35rem;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
-      }
-
-      textarea {
-        width: 100%;
-        min-height: 220px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
-        font-size: 0.86rem;
-        padding: 0.75rem 0.8rem;
-        border-radius: 0.9rem;
-        border: 1px solid var(--border);
-        background: #020617;
-        color: var(--text-main);
-        resize: vertical;
-        outline: none;
-      }
-
-      textarea:focus {
-        border-color: #4ade80;
-        box-shadow: 0 0 0 1px #4ade8080;
-      }
-
-      .row {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-top: 1rem;
-      }
-
-      .field-group {
-        flex: 1 1 180px;
-        min-width: 0;
-      }
-
-      select {
-        width: 100%;
-        padding: 0.55rem 0.7rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #020617;
-        color: var(--text-main);
-        font-size: 0.85rem;
-        outline: none;
-      }
-
-      select:focus {
-        border-color: #4ade80;
-        box-shadow: 0 0 0 1px #4ade8080;
-      }
-
-      .actions {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-      }
-
-      button {
-        padding: 0.55rem 1.1rem;
-        border-radius: 999px;
-        border: none;
-        background: linear-gradient(135deg, #22c55e, #4ade80);
-        color: #022c22;
-        font-weight: 700;
-        font-size: 0.9rem;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3), 0 0 0 1px #16653440;
-        transition: transform 0.08s ease, box-shadow 0.08s ease,
-          filter 0.08s ease;
-      }
-
-      button span {
-        font-size: 1rem;
-      }
-
-      button:hover {
-        filter: brightness(1.05);
-        transform: translateY(-1px);
-        box-shadow: 0 14px 35px rgba(34, 197, 94, 0.38), 0 0 0 1px #16a34a80;
-      }
-
-      button:disabled {
-        opacity: 0.7;
-        cursor: wait;
-        transform: none;
-        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.7);
-      }
-
-      .hint {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-      }
-
-      .status {
-        font-size: 0.8rem;
-        margin-top: 0.4rem;
-        min-height: 1em;
-      }
-
-      .status.error {
-        color: #fca5a5;
-      }
-
-      .status.ok {
-        color: #a7f3d0;
-      }
-
-      .output-card {
-        margin-top: 1.25rem;
-        padding: 0.9rem;
-        border-radius: 1rem;
-        border: 1px solid var(--border);
-        background: radial-gradient(circle at top left, #0f172a, #020617 60%);
-      }
-
-      .output-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.4rem;
-      }
-
-      .output-title {
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-muted);
-      }
-
-      .pill {
-        font-size: 0.74rem;
-        border-radius: 999px;
-        padding: 0.18rem 0.55rem;
-        background: #111827;
-        border: 1px solid #1f2937;
-        color: var(--text-muted);
-      }
-
-      pre {
-        margin: 0;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
-        font-size: 0.82rem;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        max-height: 420px;
-        overflow: auto;
-      }
-
-      @media (max-width: 640px) {
-        .card {
-          padding: 1.1rem;
-        }
-        header {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="shell">
-      <div class="card">
-        <header>
-          <div class="title-row">
-            <div class="logo-pill">💬</div>
-            <h1>
-              <span>Code Comment!</span>
-            </h1>
-          </div>
-          <div class="chip">
-            <span class="chip-dot"></span>
-            <span>AI-powered helper</span>
-          </div>
-        </header>
-
-        <div>
-          <label for="code">Your code</label>
-          <textarea id="code" placeholder="Paste your code here..."></textarea>
+      <div class="row">
+        <div class="field-group" id="levelField">
+          <label for="level">Explanation level</label>
+          <select id="level">
+            <option value="1">Beginner</option>
+            <option value="2" selected>Intermediate</option>
+            <option value="3">Advanced</option>
+          </select>
         </div>
 
-        <div class="row">
-          <div class="field-group">
-            <label for="level">Explanation level</label>
-            <select id="level">
-              <option value="1">Beginner</option>
-              <option value="2">Intermediate</option>
-              <option value="3">Advanced</option>
-            </select>
-          </div>
-
-          <div class="field-group">
-            <label for="language">Comment style</label>
-            <select id="language">
-              <option value="1">Python</option>
-              <option value="2">JavaScript</option>
-              <option value="3">Java</option>
-              <option value="4">C++</option>
-              <option value="5">HTML</option>
-              <option value="6">React JavaScript</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button id="generateBtn">
-            <span>✨</span>
-            <span>Generate Comments</span>
-          </button>
-        </div>
-
-        <div id="status" class="status"></div>
-
-        <div class="output-card">
-          <div class="output-header">
-            <div class="output-title">Commented code</div>
-            <div class="pill">Read-only preview</div>
-          </div>
-          <pre id="output">(Your commented code will appear here)</pre>
+        <div class="field-group">
+          <label for="language">Language</label>
+          <select id="language">
+            <option value="1">Python</option>
+            <option value="2">JavaScript</option>
+            <option value="3">TypeScript</option>
+            <option value="4">Java</option>
+            <option value="5">C++</option>
+            <option value="6">HTML</option>
+            <option value="7">React (JSX)</option>
+            <option value="8">Go</option>
+            <option value="9">Rust</option>
+            <option value="10">SQL</option>
+          </select>
         </div>
       </div>
+
+      <div class="actions">
+        <button class="generate-btn" id="generateBtn" onclick="generate()">
+          <span>✨</span>
+          <span id="btnLabel">Generate Comments</span>
+        </button>
+        <span class="hint" id="modeHint">Paste code above, select level &amp; language, then click generate.</span>
+      </div>
+
+      <div id="status" class="status"></div>
+
+      <div class="output-card">
+        <div class="output-header">
+          <div class="output-title" id="outputTitle">Output</div>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <button class="copy-btn" id="copyBtn" onclick="copyOutput()" style="display:none;">
+              📋 Copy
+            </button>
+            <div class="pill" id="outputPill">Waiting...</div>
+          </div>
+        </div>
+        <pre id="output">(Your output will appear here)</pre>
+      </div>
     </div>
+  </div>
 
-    <script>
-      const generateBtn = document.getElementById("generateBtn");
-      const codeInput = document.getElementById("code");
-      const levelSelect = document.getElementById("level");
-      const languageSelect = document.getElementById("language");
-      const output = document.getElementById("output");
+  <script>
+    let currentMode = "comments";
+
+    const modeConfig = {
+      comments: {
+        label: "Generate Comments",
+        description: "Add inline comments to your code at the right level of detail for your audience.",
+        outputTitle: "Commented code",
+        endpoint: "/generate-comments",
+        resultKey: "commented_code",
+        showLevel: true,
+        pill: "Commented output"
+      },
+      docstrings: {
+        label: "Generate Docstrings",
+        description: "Auto-generate proper docstrings/JSDoc/Javadoc for all functions and classes.",
+        outputTitle: "Code with docstrings",
+        endpoint: "/generate-docstrings",
+        resultKey: "output",
+        showLevel: false,
+        pill: "Docstring output"
+      },
+      explain: {
+        label: "Explain Code",
+        description: "Get a plain-English explanation of what the code does and how it works.",
+        outputTitle: "Explanation",
+        endpoint: "/explain-code",
+        resultKey: "output",
+        showLevel: true,
+        pill: "Explanation"
+      },
+      readme: {
+        label: "Generate README",
+        description: "Create a professional README.md with usage examples and documentation.",
+        outputTitle: "README.md",
+        endpoint: "/generate-readme",
+        resultKey: "output",
+        showLevel: false,
+        pill: "README output"
+      }
+    };
+
+    function setMode(mode) {
+      currentMode = mode;
+      const config = modeConfig[mode];
+
+      document.querySelectorAll(".mode-tab").forEach(t => t.classList.remove("active"));
+      document.querySelector(`[data-mode="${mode}"]`).classList.add("active");
+
+      document.getElementById("btnLabel").textContent = config.label;
+      document.getElementById("modeDescription").textContent = config.description;
+      document.getElementById("outputTitle").textContent = config.outputTitle;
+      document.getElementById("outputPill").textContent = config.pill;
+      document.getElementById("levelField").style.display = config.showLevel ? "" : "none";
+      document.getElementById("output").textContent = "(Your output will appear here)";
+      document.getElementById("status").textContent = "";
+      document.getElementById("copyBtn").style.display = "none";
+    }
+
+    async function generate() {
+      const code = document.getElementById("code").value.trim();
+      const level_choice = document.getElementById("level").value;
+      const lang_choice = document.getElementById("language").value;
+      const config = modeConfig[currentMode];
+
       const statusEl = document.getElementById("status");
+      statusEl.textContent = "";
+      statusEl.className = "status";
 
-      generateBtn.addEventListener("click", async () => {
-        const code = codeInput.value.trim();
-        const level_choice = levelSelect.value;
-        const lang_choice = languageSelect.value;
+      if (!code) {
+        statusEl.textContent = "Please paste some code first.";
+        statusEl.classList.add("error");
+        return;
+      }
 
-        statusEl.textContent = "";
-        statusEl.className = "status";
-        if (!code) {
-          statusEl.textContent = "Please paste some code first.";
+      const output = document.getElementById("output");
+      const btn = document.getElementById("generateBtn");
+      const copyBtn = document.getElementById("copyBtn");
+
+      output.textContent = "";
+      copyBtn.style.display = "none";
+      btn.disabled = true;
+      document.getElementById("btnLabel").textContent = "Working...";
+
+      try {
+        const res = await fetch(config.endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code, level_choice, lang_choice })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          statusEl.textContent = data.error || "Unknown server error.";
           statusEl.classList.add("error");
+          output.textContent = "(No output due to error.)";
           return;
         }
 
-        output.textContent = "";
-        generateBtn.disabled = true;
-        generateBtn.innerHTML = "<span>⏳</span><span>Generating...</span>";
+        output.textContent = data[config.resultKey] || "(No output received)";
+        statusEl.textContent = "Done!";
+        statusEl.classList.add("ok");
+        copyBtn.style.display = "inline-flex";
+      } catch (err) {
+        statusEl.textContent = "Failed to reach the server. Is Flask running?";
+        statusEl.classList.add("error");
+        output.textContent = "(Connection error)";
+      } finally {
+        btn.disabled = false;
+        document.getElementById("btnLabel").textContent = config.label;
+      }
+    }
 
-        try {
-          const res = await fetch("/generate-comments", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ code, level_choice, lang_choice }),
-          });
-
-          const data = await res.json();
-
-          if (!res.ok) {
-            statusEl.textContent = data.error || "Unknown server error.";
-            statusEl.classList.add("error");
-            output.textContent = "(No output due to error.)";
-            return;
-          }
-
-          output.textContent = data.commented_code || "(No output received)";
-          statusEl.textContent = "Done! Scroll to explore your commented code.";
-          statusEl.classList.add("ok");
-        } catch (err) {
-          console.error(err);
-          statusEl.textContent =
-            "Failed to reach the server. Is Flask running?";
-          statusEl.classList.add("error");
-          output.textContent = "(No output due to connection error.)";
-        } finally {
-          generateBtn.disabled = false;
-          generateBtn.innerHTML =
-            "<span>✨</span><span>Generate Comments</span>";
-        }
+    function copyOutput() {
+      const text = document.getElementById("output").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.textContent = "✅ Copied!";
+        setTimeout(() => { btn.innerHTML = "📋 Copy"; }, 2000);
       });
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
